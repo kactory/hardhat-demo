@@ -3,6 +3,7 @@ import { ethers } from "hardhat";
 async function main() {
     // await deploy();
     await mint();
+    await transfer();
 }
 
 /// 토큰 스마트 컨트랙트. 토큰의 개념을 발행한다고 보면 됨.
@@ -59,6 +60,18 @@ async function mint() {
     console.log("Minted", amount1, "KEYKAT to", deployer.address);
     console.log("Minted", amount2, "KEYKAT to", user1.address);
     console.log("Minted", amount3, "KEYKAT to", user2.address);
+}
+
+async function transfer() {
+    const [user1, user2] = await ethers.getSigners();
+    const tokenAddress = "0x26B210Ba864F96741A059B7509210CF90226D46e";
+    const Keykat = await ethers.getContractAt("KEYKAT", tokenAddress);
+    
+    const amount1 = ethers.parseUnits("180", 18);
+
+    await Keykat.connect(user1).transfer(user2.address, amount1);
+
+    console.log("Transferred", amount1, "KEYKAT from", user1.address, "to", user2.address);
 }
 
 main().catch((error) => {
